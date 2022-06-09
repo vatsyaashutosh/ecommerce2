@@ -1,19 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Table, Button } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Message } from "../component/Message";
 import { Loader } from "../component/Loader";
-import { listUsers } from "../actions/userActions";
+import { deleteUser, listUsers } from "../actions/userActions";
+import { useNavigate } from "react-router-dom";
 
 export const UserListScreen = () => {
   const dispatch = useDispatch();
   const userList = useSelector((state) => state.userList);
   const { loading, error, users } = userList;
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  const userDelete = useSelector((state) => state.userDelete);
+  const { success: successDelete } = userDelete;
+  const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(listUsers());
-  }, [dispatch]);
+    if (userInfo && userInfo.isAdmin) dispatch(listUsers());
+    else navigate("/login");
+  }, [dispatch, navigate, successDelete]);
+  const deleteHandler = (id) => {
+    if (window.confirm("Are you sure")) dispatch(deleteUser(id));
+  };
   return (
     <>
       <h1>Users</h1>
@@ -38,7 +49,7 @@ export const UserListScreen = () => {
                 <td> {user._id} </td>
                 <td> {user.name} </td>
                 <td>
-                  <a href={`mailto:${user.email}`}></a> {user.email}
+                  <a href={`mailto:${user.email}`}>{user.email}</a>
                 </td>
                 <td>
                   {user.isAdmin ? (
@@ -46,6 +57,20 @@ export const UserListScreen = () => {
                   ) : (
                     <i className="fas fa-times" style={{ color: "red" }}></i>
                   )}
+                </td>
+                <td>
+                  <LinkContainer to={`/admin/user/${user._id}/edit`}>
+                    <Button variant="light" className="btn-sm">
+                      <i className="fas fa-edit"></i>
+                    </Button>
+                  </LinkContainer>
+                  <Button
+                    variant="danger"
+                    className="btn-sm"
+                    onClick={() => deleteHandler(user._id)}
+                  >
+                    <i className="fas fa-trash"></i>
+                  </Button>
                 </td>
               </tr>
             ))}
