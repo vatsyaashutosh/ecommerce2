@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Button, FormControl, FormGroup } from "react-bootstrap";
+import { Form, Button, FormControl } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 const SearchBox = () => {
@@ -31,16 +31,3 @@ const SearchBox = () => {
 };
 
 export default SearchBox;
-
-{
-  /* <Form.Control
-        type="text"
-        name="q"
-        
-        placeholder="Search Products..."
-        className="mr-sm-2 ml-sm-5"
-      ></Form.Control>
-      <Button type="submit" variant="outline-success" className="p-2">
-        Search
-      </Button> */
-}
